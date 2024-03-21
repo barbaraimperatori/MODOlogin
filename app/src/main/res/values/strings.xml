@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MODO login</string>
+    <string name="modo_logo">MODO logo</string>
+    <string name="pass_digit">●</string>
+</resources>

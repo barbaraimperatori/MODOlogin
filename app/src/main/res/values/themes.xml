@@ -1,0 +1,9 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.MODOlogin" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <item name="android:buttonStyle">@style/key_button</item>
+    </style>
+
+    <style name="Theme.MODOlogin" parent="Base.Theme.MODOlogin" />
+</resources>
