@@ -3,7 +3,18 @@ package com.example.modologin
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
 import android.os.Bundle
+import android.util.Log
+import androidx.activity.viewModels
+import androidx.lifecycle.Observer
+import com.example.modologin.core.Resource
+import com.example.modologin.data.model.Login
+import com.example.modologin.data.remote.LoginDataSource
 import com.example.modologin.databinding.ActivityMainBinding
+import com.example.modologin.presentation.LoginViewModel
+import com.example.modologin.presentation.LoginViewModelFactory
+import com.example.modologin.repository.LoginRepositoryImpl
+import com.example.modologin.repository.RetroFitClient
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -11,23 +22,59 @@ class MainActivity : AppCompatActivity() {
 
     private var password: String = ""
 
+    private val viewModel by viewModels<LoginViewModel> {
+        LoginViewModelFactory(
+            LoginRepositoryImpl(
+                LoginDataSource(
+                    RetroFitClient.webService
+                )
+            )
+        )
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_main)
 
         setButtonClickListeners()
+
     }
 
     private fun setButtonClickListeners() {
-        // Iterate through the list of buttons and set click listeners
+
         for (button in listOfButtons) {
             button.setOnClickListener {
-                // Get the text of the clicked button
+
                 val buttonText = (it as Button).text.toString()
 
-                // Append the clicked key to the password
                 password += buttonText
+
+                if (password.length === 6) {
+
+                    val login = Login(
+                        dni = "37930877",
+                        phone_number = "+5492477566569",
+                        password = password
+                    )
+
+                    viewModel.postLogin(login).observe(this, Observer { resource ->
+                        when (resource) {
+                            is Resource.Loading -> {
+                                Log.d("Loading state", "Loading")
+                            }
+
+                            is Resource.Success -> {
+                                Log.d("Success state", "SUCCESS")
+                            }
+
+                            is Resource.Failure -> {
+                                Log.d("Failure state", "FAILURE")
+                            }
+                        }
+                    })
+                }
 
             }
         }
@@ -46,6 +93,6 @@ class MainActivity : AppCompatActivity() {
         binding.key8,
         binding.key9,
 
-    )
+        )
 
 }
